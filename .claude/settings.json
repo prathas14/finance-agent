@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Write(/Users/hiraskarn/Documents/GitHub/finance-agent/**)",
+      "Edit(/Users/hiraskarn/Documents/GitHub/finance-agent/**)",
+      "Bash(mkdir *)",
+      "Bash(pip install *)",
+      "Bash(python3 *)",
+      "Bash(streamlit run *)"
+    ],
+    "deny": []
+  }
+}

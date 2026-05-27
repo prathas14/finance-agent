@@ -1,0 +1,22 @@
+{
+  "ETF": "Exchange-Traded Fund — a basket of securities that trades on an exchange like a stock.",
+  "Bond": "A fixed-income instrument representing a loan from an investor to a borrower (corporate or government).",
+  "Stock": "A share of ownership in a company, entitling the holder to a proportion of assets and earnings.",
+  "Dividend": "A portion of a company's earnings distributed to shareholders, usually quarterly.",
+  "P/E Ratio": "Price-to-Earnings ratio — stock price divided by earnings per share; indicates valuation.",
+  "Market Cap": "Total market value of a company's outstanding shares (price × shares outstanding).",
+  "Diversification": "Spreading investments across asset classes to reduce risk.",
+  "Compound Interest": "Interest calculated on both the initial principal and accumulated interest over time.",
+  "Index Fund": "A fund that tracks a market index (e.g. S&P 500), offering broad market exposure at low cost.",
+  "Asset Allocation": "The distribution of investments among asset classes (stocks, bonds, cash, etc.).",
+  "Bull Market": "A market condition where prices are rising or expected to rise.",
+  "Bear Market": "A market condition where prices are falling 20% or more from recent highs.",
+  "Liquidity": "How easily an asset can be converted to cash without affecting its price.",
+  "Volatility": "The degree of variation in a trading price over time, measured by standard deviation.",
+  "Rebalancing": "Realigning portfolio weights to maintain a desired asset allocation.",
+  "Dollar-Cost Averaging": "Investing a fixed amount at regular intervals regardless of market conditions.",
+  "Net Worth": "Total assets minus total liabilities.",
+  "Emergency Fund": "3-6 months of living expenses set aside in liquid savings for unexpected events.",
+  "401(k)": "A tax-advantaged retirement savings plan offered by employers in the US.",
+  "Roth IRA": "An individual retirement account funded with after-tax dollars; withdrawals in retirement are tax-free."
+}
