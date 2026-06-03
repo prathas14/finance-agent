@@ -86,7 +86,7 @@ def analyze(portfolio: dict | None = None) -> dict:
 def summarize(portfolio: dict | None = None) -> str:
     try:
         data = analyze(portfolio)
-        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.2)
+        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", temperature=0.2)
 
         prompt = f"""You are a portfolio analyst. Summarize the following portfolio data in plain English.
 Highlight key strengths, risks, and one actionable suggestion. Be concise (3-5 sentences).

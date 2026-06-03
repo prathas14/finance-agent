@@ -6,11 +6,14 @@ Graph:
 """
 from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, END
+from langgraph.graph.message import add_messages
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from memory.conversation_memory import checkpointer
 
 
 class AgentState(TypedDict):
+    messages: Annotated[list, add_messages]
     query: str
     intent: str
     response: str
@@ -19,7 +22,7 @@ class AgentState(TypedDict):
 
 
 def _classify(state: AgentState) -> AgentState:
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", temperature=0)
     prompt = f"""Classify this financial query into exactly one category.
 Reply with only the category name, nothing else.
 
@@ -44,22 +47,26 @@ def _route(state: AgentState) -> str:
 
 def _rag_node(state: AgentState) -> AgentState:
     from agents.rag_agent import answer
-    return {**state, "response": answer(state["query"])}
+    response = answer(state["query"], state.get("messages", []))
+    return {**state, "response": response, "messages": [AIMessage(content=response)]}
 
 
 def _portfolio_node(state: AgentState) -> AgentState:
     from agents.portfolio_agent import summarize
-    return {**state, "response": summarize(state.get("portfolio"))}
+    response = summarize(state.get("portfolio"))
+    return {**state, "response": response, "messages": [AIMessage(content=response)]}
 
 
 def _market_node(state: AgentState) -> AgentState:
     from agents.market_data_agent import answer
-    return {**state, "response": answer(state["query"])}
+    response = answer(state["query"], state.get("messages", []))
+    return {**state, "response": response, "messages": [AIMessage(content=response)]}
 
 
 def _goal_node(state: AgentState) -> AgentState:
     from agents.goal_planning_agent import answer
-    return {**state, "response": answer(state["query"], state.get("goals"))}
+    response = answer(state["query"], state.get("goals"), state.get("messages", []))
+    return {**state, "response": response, "messages": [AIMessage(content=response)]}
 
 
 def build_graph():
@@ -98,6 +105,13 @@ def get_graph():
 def chat(query: str, session_id: str = "default", portfolio: dict | None = None, goals: list | None = None) -> str:
     graph = get_graph()
     config = {"configurable": {"thread_id": session_id}}
-    state = {"query": query, "intent": "", "response": "", "portfolio": portfolio, "goals": goals}
+    state = {
+        "messages": [HumanMessage(content=query)],
+        "query": query,
+        "intent": "",
+        "response": "",
+        "portfolio": portfolio,
+        "goals": goals,
+    }
     result = graph.invoke(state, config=config)
     return result["response"]

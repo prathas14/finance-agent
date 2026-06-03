@@ -50,27 +50,31 @@ def analyze_goals(goals: list[dict]) -> list[dict]:
     return results
 
 
-def answer(query: str, goals: list[dict] | None = None) -> str:
+def answer(query: str, goals: list[dict] | None = None, history: list = []) -> str:
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.3)
+        from langchain_core.messages import SystemMessage, HumanMessage
+
+        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", temperature=0.3)
 
         goals_context = ""
         if goals:
             analyzed = analyze_goals(goals)
             goals_context = f"\nUser's current goals analysis:\n{analyzed}\n"
 
-        prompt = f"""You are a financial goal planning assistant. Help the user with savings goals,
-compound interest calculations, and financial planning.
-{goals_context}
-Use these formulas when relevant:
-- Future Value = P(1+r)^n + PMT*((1+r)^n - 1)/r
-- Months to goal = log(1 + remaining*r/PMT) / log(1+r)  where r = annual_rate/12
+        system = SystemMessage(content=(
+            "You are a financial goal planning assistant. Help the user with savings goals, "
+            "compound interest calculations, and financial planning.\n"
+            f"{goals_context}"
+            "Use these formulas when relevant:\n"
+            "- Future Value = P(1+r)^n + PMT*((1+r)^n - 1)/r\n"
+            "- Months to goal = log(1 + remaining*r/PMT) / log(1+r)  where r = annual_rate/12\n\n"
+            "Provide a clear, actionable answer with specific numbers where possible."
+        ))
 
-User query: {query}
+        prior = history[:-1] if history else []
+        messages = [system] + prior + [HumanMessage(content=query)]
 
-Provide a clear, actionable answer with specific numbers where possible."""
-
-        result = llm.invoke(prompt)
+        result = llm.invoke(messages)
         return result.content + DISCLAIMER
     except Exception as e:
         return f"Goal planning agent error: {e}{DISCLAIMER}"
