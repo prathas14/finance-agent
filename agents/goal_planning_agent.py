@@ -1,5 +1,5 @@
 import math
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 
 DISCLAIMER = "\n\n⚠️ *This is for educational purposes only and not financial advice.*"
 
@@ -54,7 +54,7 @@ def answer(query: str, goals: list[dict] | None = None, history: list = []) -> s
     try:
         from langchain_core.messages import SystemMessage, HumanMessage
 
-        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", temperature=0.3)
+        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
 
         goals_context = ""
         if goals:

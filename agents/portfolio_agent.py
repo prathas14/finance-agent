@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from tools import alpha_vantage, yfinance_tool
 
 DISCLAIMER = "\n\n⚠️ *This is for educational purposes only and not financial advice.*"
@@ -86,7 +86,7 @@ def analyze(portfolio: dict | None = None) -> dict:
 def summarize(portfolio: dict | None = None) -> str:
     try:
         data = analyze(portfolio)
-        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", temperature=0.2)
+        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 
         prompt = f"""You are a portfolio analyst. Summarize the following portfolio data in plain English.
 Highlight key strengths, risks, and one actionable suggestion. Be concise (3-5 sentences).

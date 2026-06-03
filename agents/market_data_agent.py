@@ -1,4 +1,4 @@
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from tools import alpha_vantage, yfinance_tool
 
 DISCLAIMER = "\n\n⚠️ *This is for educational purposes only and not financial advice.*"
@@ -27,7 +27,7 @@ def answer(query: str, history: list = []) -> str:
     """Interpret a natural language market query and respond."""
     from langchain_core.messages import SystemMessage, HumanMessage
 
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", temperature=0.1)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.1)
 
     # Use history to resolve follow-up ticker references (e.g. "what about its news?")
     history_text = ""

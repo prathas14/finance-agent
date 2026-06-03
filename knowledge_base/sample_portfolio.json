@@ -1,20 +1,21 @@
 {
-  "owner": "Sample Investor",
-  "cash": 5000.00,
+  "owner": "Investor Pratha",
+  "cash": 8500.00,
   "holdings": [
-    {"symbol": "AAPL", "shares": 10, "avg_cost": 150.00, "asset_class": "stock"},
-    {"symbol": "MSFT", "shares": 5,  "avg_cost": 280.00, "asset_class": "stock"},
-    {"symbol": "BND",  "shares": 20, "avg_cost": 74.00,  "asset_class": "bond_etf"},
-    {"symbol": "VTI",  "shares": 8,  "avg_cost": 210.00, "asset_class": "index_etf"},
-    {"symbol": "GLD",  "shares": 3,  "avg_cost": 175.00, "asset_class": "commodity_etf"}
+    {"symbol": "AAPL",  "shares": 15,  "avg_cost": 145.00, "asset_class": "stock"},
+    {"symbol": "TSLA",  "shares": 10,  "avg_cost": 280.00, "asset_class": "stock"},
+    {"symbol": "NVDA",  "shares": 5,   "avg_cost": 420.00, "asset_class": "stock"},
+    {"symbol": "BND",   "shares": 30,  "avg_cost": 74.00,  "asset_class": "bond_etf"},
+    {"symbol": "VTI",   "shares": 12,  "avg_cost": 200.00, "asset_class": "index_etf"},
+    {"symbol": "GLD",   "shares": 8,   "avg_cost": 185.00, "asset_class": "commodity_etf"}
   ],
   "liabilities": [
-    {"name": "Student Loan", "balance": 15000.00, "interest_rate": 0.045},
-    {"name": "Credit Card",  "balance": 2200.00,  "interest_rate": 0.19}
+    {"name": "Car Loan",     "balance": 12000.00, "interest_rate": 0.065},
+    {"name": "Credit Card",  "balance": 3500.00,  "interest_rate": 0.22}
   ],
   "goals": [
-    {"name": "Emergency Fund",    "target": 20000, "current": 5000,  "monthly_contribution": 500},
-    {"name": "House Down Payment","target": 80000, "current": 12000, "monthly_contribution": 1000},
-    {"name": "Retirement",        "target": 1000000,"current": 45000,"monthly_contribution": 800}
+    {"name": "Emergency Fund",     "target": 25000,   "current": 8500,  "monthly_contribution": 600},
+    {"name": "House Down Payment", "target": 100000,  "current": 22000, "monthly_contribution": 1200},
+    {"name": "Retirement",         "target": 1500000, "current": 62000, "monthly_contribution": 1000}
   ]
 }

@@ -1,6 +1,6 @@
 from pathlib import Path
 from langchain_community.vectorstores import FAISS
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
@@ -15,7 +15,7 @@ _vectorstore = None
 def _get_retriever():
     global _vectorstore
     if _vectorstore is None:
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+        embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
         _vectorstore = FAISS.load_local(INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
     return _vectorstore.as_retriever(search_kwargs={"k": 4})
 
@@ -28,7 +28,7 @@ def answer(question: str, history: list = []) -> str:
     try:
         retriever = _get_retriever()
         context = _format_docs(retriever.invoke(question))
-        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", temperature=0.2)
+        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 
         system = SystemMessage(content=(
             "You are a friendly financial literacy educator. Use the context below to answer the question.\n"

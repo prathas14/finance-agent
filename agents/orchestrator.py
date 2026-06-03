@@ -8,7 +8,7 @@ from typing import TypedDict, Annotated
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
 from langchain_core.messages import HumanMessage, AIMessage
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from memory.conversation_memory import checkpointer
 
 
@@ -22,7 +22,7 @@ class AgentState(TypedDict):
 
 
 def _classify(state: AgentState) -> AgentState:
-    llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite", temperature=0)
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
     prompt = f"""Classify this financial query into exactly one category.
 Reply with only the category name, nothing else.
 

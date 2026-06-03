@@ -8,7 +8,7 @@ from pathlib import Path
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -44,7 +44,7 @@ def build_index():
         metadatas.extend([{"source": doc["source"]}] * len(splits))
 
     print(f"Created {len(chunks)} chunks. Building FAISS index...")
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     vectorstore = FAISS.from_texts(chunks, embeddings, metadatas=metadatas)
     vectorstore.save_local(str(INDEX_PATH))
     print(f"Index saved to {INDEX_PATH}")
