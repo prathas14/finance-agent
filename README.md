@@ -20,7 +20,7 @@ pip install -r requirements.txt
 
 ### 2. Configure API keys
 ```bash
-cp .env.example .env
+cp .env .env
 # Edit .env and add your keys:
 # GOOGLE_API_KEY=...
 # ALPHA_VANTAGE_API_KEY=...

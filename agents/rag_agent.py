@@ -1,8 +1,8 @@
 from pathlib import Path
 from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema.runnable import RunnablePassthrough
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
 
 INDEX_PATH = str(Path(__file__).parent.parent / "knowledge_base" / ".faiss")
 
@@ -17,7 +17,7 @@ def _get_chain():
     if _chain:
         return _chain
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
     _vectorstore = FAISS.load_local(INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
     retriever = _vectorstore.as_retriever(search_kwargs={"k": 4})
 
