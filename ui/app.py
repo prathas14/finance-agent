@@ -31,7 +31,7 @@ if "portfolio_data" not in st.session_state:
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.title("💰 Finance Assistant")
-    st.caption("Powered by Gemini 2.0 Flash + LangGraph")
+    st.caption("Powered by GPT-4o-mini + LangGraph")
     st.divider()
     st.markdown("**Quick questions to try:**")
     st.markdown("- What is an ETF?")

@@ -96,7 +96,7 @@ Routes user queries to the correct specialist agent using a zero-temperature LLM
 
 Answers financial education questions using Retrieval-Augmented Generation over a local FAISS knowledge base.
 
-- **Knowledge base:** 3 markdown articles (investing basics, bonds, stocks/ETFs) + 20-term glossary
+- **Knowledge base:** 55 markdown articles across 13 topic categories + 107-term glossary (444 chunks total)
 - **Embeddings:** `text-embedding-3-small` (OpenAI)
 - **Retrieval:** Top-4 most semantically similar chunks (cosine similarity via FAISS)
 - **LLM:** `gpt-4o-mini` (temperature 0.2)
@@ -220,7 +220,7 @@ python knowledge_base/ingest.py
 Expected output:
 ```
 Loading documents...
-Created 14 chunks. Building FAISS index...
+Created 444 chunks. Building FAISS index...
 Index saved to knowledge_base/.faiss
 ```
 
@@ -390,6 +390,10 @@ quote: dict = get_quote("AAPL")
 What is dollar-cost averaging?
 How is that different from lump-sum investing?    ← follow-up uses conversation history
 What are the risks of bonds?
+Explain the 4% rule for retirement withdrawals
+What is tax-loss harvesting and how does it work?
+How does a Roth IRA differ from a Traditional IRA?
+What is the FIRE movement?
 ```
 
 **Portfolio Analysis**
@@ -432,7 +436,7 @@ pytest tests/ -v
 
 | Test File | Module | What is Covered |
 |---|---|---|
-| `test_rag_agent.py` | `agents/rag_agent.py` | Disclaimer injection, retriever mock, exception handling, history parameter |
+| `test_rag_agent.py` | `agents/rag_agent.py` | Disclaimer injection, retriever mock, exception handling, history parameter (knowledge base: 55 articles, 107-term glossary, 444 chunks) |
 | `test_portfolio_agent.py` | `agents/portfolio_agent.py`, `agents/goal_planning_agent.py` | Net worth math, gain/loss, goals progress, compound interest |
 | `test_market_data_agent.py` | `agents/market_data_agent.py`, `tools/` | AV quote, yfinance fallback, news retrieval |
 | `test_goal_planning_agent.py` | `agents/goal_planning_agent.py` | Edge cases: zero contribution, goal already met, high return, negative remaining |
@@ -471,6 +475,7 @@ If step 2 or 4 loses context, memory is not working correctly.
 ```bash
 python knowledge_base/ingest.py
 ```
+Expected output: `Created 444 chunks. Building FAISS index...`
 
 ### Portfolio Dashboard shows no data
 **Cause:** Uploaded JSON does not match expected schema.  
@@ -503,12 +508,64 @@ finance-agent/
 │
 ├── knowledge_base/
 │   ├── ingest.py                    # One-time FAISS index builder
-│   ├── glossary.json                # 20 financial term definitions
+│   ├── glossary.json                # 107 financial term definitions
 │   ├── sample_portfolio.json        # Demo portfolio for testing
-│   ├── articles/                    # Markdown knowledge base articles
+│   ├── articles/                    # 55 markdown knowledge base articles
 │   │   ├── investing_basics.md
 │   │   ├── bonds_fixed_income.md
-│   │   └── stocks_and_etfs.md
+│   │   ├── stocks_and_etfs.md
+│   │   ├── time_value_of_money.md
+│   │   ├── inflation.md
+│   │   ├── compound_interest_deep_dive.md
+│   │   ├── risk_and_return.md
+│   │   ├── how_stock_markets_work.md
+│   │   ├── stock_valuation.md
+│   │   ├── dividends.md
+│   │   ├── growth_vs_value_investing.md
+│   │   ├── stock_splits_and_buybacks.md
+│   │   ├── index_funds.md
+│   │   ├── bond_types.md
+│   │   ├── bond_yield_and_duration.md
+│   │   ├── tips_and_ibonds.md
+│   │   ├── etf_types.md
+│   │   ├── mutual_funds.md
+│   │   ├── expense_ratios_and_costs.md
+│   │   ├── passive_vs_active_investing.md
+│   │   ├── 401k.md
+│   │   ├── ira_traditional_and_roth.md
+│   │   ├── retirement_withdrawal_strategies.md
+│   │   ├── social_security.md
+│   │   ├── capital_gains_tax.md
+│   │   ├── tax_loss_harvesting.md
+│   │   ├── hsa_and_fsa.md
+│   │   ├── 529_plans.md
+│   │   ├── tax_advantaged_accounts_overview.md
+│   │   ├── asset_allocation.md
+│   │   ├── modern_portfolio_theory.md
+│   │   ├── rebalancing.md
+│   │   ├── dollar_cost_averaging.md
+│   │   ├── behavioral_finance.md
+│   │   ├── market_cycles.md
+│   │   ├── savings_rates_and_fire.md
+│   │   ├── reits.md
+│   │   ├── rental_property_basics.md
+│   │   ├── mortgage_basics.md
+│   │   ├── debt_management.md
+│   │   ├── credit_scores.md
+│   │   ├── student_loans.md
+│   │   ├── emergency_fund.md
+│   │   ├── budgeting_fundamentals.md
+│   │   ├── net_worth_tracking.md
+│   │   ├── insurance_basics.md
+│   │   ├── estate_planning.md
+│   │   ├── financial_planning_life_stages.md
+│   │   ├── options_basics.md
+│   │   ├── cryptocurrency_basics.md
+│   │   ├── commodities.md
+│   │   ├── international_investing.md
+│   │   ├── alternative_investments.md
+│   │   ├── robo_advisors.md
+│   │   └── financial_advisors.md
 │   └── .faiss/                      # Generated FAISS index (not committed)
 │
 ├── tools/
