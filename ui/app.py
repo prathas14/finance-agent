@@ -12,6 +12,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from pathlib import Path
+if not Path("knowledge_base/.faiss").exists():
+    import subprocess
+    subprocess.run([sys.executable, "knowledge_base/ingest.py"], check=True)
+
 st.set_page_config(
     page_title="AI Finance Assistant",
     page_icon="💰",
