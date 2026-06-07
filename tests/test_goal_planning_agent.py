@@ -1,5 +1,6 @@
 import pytest
-from agents.goal_planning_agent import months_to_goal, compound_growth, analyze_goals
+from unittest.mock import patch, MagicMock
+from agents.goal_planning_agent import months_to_goal, compound_growth, analyze_goals, answer
 
 
 # ---------------------------------------------------------------------------
@@ -131,3 +132,36 @@ def test_analyze_goals_preserves_all_fields():
     for key in ("name", "target", "current", "monthly_contribution",
                 "percent_complete", "months_to_goal", "time_estimate"):
         assert key in r
+
+
+# ---------------------------------------------------------------------------
+# answer()
+# ---------------------------------------------------------------------------
+
+@patch("agents.goal_planning_agent.ChatOpenAI")
+def test_answer_with_goals_context(mock_llm_cls):
+    mock_llm = MagicMock()
+    mock_llm.invoke.return_value.content = "You will reach your goal in 18 months."
+    mock_llm_cls.return_value = mock_llm
+
+    goals = [{"name": "Emergency Fund", "target": 10000, "current": 2000, "monthly_contribution": 500}]
+    result = answer("How long to reach my emergency fund goal?", goals=goals)
+    assert "18 months" in result
+    assert "educational purposes" in result or "financial advice" in result
+
+
+@patch("agents.goal_planning_agent.ChatOpenAI")
+def test_answer_without_goals(mock_llm_cls):
+    mock_llm = MagicMock()
+    mock_llm.invoke.return_value.content = "Save consistently each month."
+    mock_llm_cls.return_value = mock_llm
+
+    result = answer("How should I start saving?")
+    assert "educational purposes" in result or "financial advice" in result
+
+
+@patch("agents.goal_planning_agent.ChatOpenAI", side_effect=Exception("API error"))
+def test_answer_handles_exception(mock_llm_cls):
+    result = answer("Some query")
+    assert "error" in result.lower()
+    assert "educational purposes" in result or "financial advice" in result

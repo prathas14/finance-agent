@@ -1,5 +1,6 @@
 import pytest
-from agents.portfolio_agent import analyze
+from unittest.mock import patch, MagicMock
+from agents.portfolio_agent import analyze, summarize
 from agents.goal_planning_agent import months_to_goal, compound_growth, analyze_goals
 
 
@@ -51,3 +52,37 @@ def test_analyze_goals():
     assert len(results) == 1
     assert results[0]["percent_complete"] == 20.0
     assert results[0]["months_to_goal"] > 0
+
+
+@patch("agents.portfolio_agent.alpha_vantage.get_quote", side_effect=RuntimeError("rate limit"))
+@patch("agents.portfolio_agent.yfinance_tool.get_quote_fallback", return_value={"price": 155.0})
+def test_fetch_prices_falls_back_to_yfinance(mock_yf, mock_av):
+    portfolio = {
+        "cash": 0.0,
+        "holdings": [{"symbol": "AAPL", "shares": 1, "avg_cost": 150.0, "asset_class": "stock"}],
+        "liabilities": [],
+    }
+    data = analyze(portfolio)
+    assert data["positions"][0]["current_price"] == 155.0
+
+
+@patch("agents.portfolio_agent.alpha_vantage.get_quote", side_effect=RuntimeError("fail"))
+@patch("agents.portfolio_agent.yfinance_tool.get_quote_fallback", side_effect=RuntimeError("fail"))
+def test_fetch_prices_falls_back_to_avg_cost(mock_yf, mock_av):
+    portfolio = {
+        "cash": 0.0,
+        "holdings": [{"symbol": "AAPL", "shares": 1, "avg_cost": 150.0, "asset_class": "stock"}],
+        "liabilities": [],
+    }
+    data = analyze(portfolio)
+    assert data["positions"][0]["current_price"] == 150.0
+
+
+@patch("agents.portfolio_agent.ChatOpenAI")
+def test_summarize_returns_disclaimer(mock_llm_cls):
+    mock_llm = MagicMock()
+    mock_llm.invoke.return_value.content = "Your portfolio looks healthy."
+    mock_llm_cls.return_value = mock_llm
+
+    result = summarize(SAMPLE_PORTFOLIO)
+    assert "educational purposes" in result or "financial advice" in result

@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch, MagicMock
 
 
-@patch("agents.rag_agent.ChatGoogleGenerativeAI")
+@patch("agents.rag_agent.ChatOpenAI")
 @patch("agents.rag_agent._get_retriever")
 def test_answer_returns_disclaimer(mock_retriever, mock_llm_cls):
     mock_retriever.return_value.invoke.return_value = []
