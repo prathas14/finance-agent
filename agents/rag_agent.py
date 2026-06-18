@@ -24,11 +24,31 @@ def _format_docs(docs) -> str:
     return "\n\n".join(d.page_content for d in docs)
 
 
+def _rewrite_query(question: str, prior: list, llm) -> str:
+    """Rewrite a follow-up question into a standalone search query using conversation history."""
+    rewrite_messages = [
+        SystemMessage(content=(
+            "Given the conversation history below, rewrite the user's latest question as a "
+            "short, self-contained search query. Output only the rewritten query, nothing else."
+        )),
+        *prior,
+        HumanMessage(content=question),
+    ]
+    return llm.invoke(rewrite_messages).content.strip()
+
+
 def answer(question: str, history: list = []) -> str:
     try:
-        retriever = _get_retriever()
-        context = _format_docs(retriever.invoke(question))
         llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
+
+        # include prior turns (exclude the current HumanMessage at the end)
+        prior = history[:-1] if history else []
+
+        # rewrite vague follow-ups into standalone queries before FAISS retrieval
+        search_query = _rewrite_query(question, prior, llm) if prior else question
+
+        retriever = _get_retriever()
+        context = _format_docs(retriever.invoke(search_query))
 
         system = SystemMessage(content=(
             "You are a friendly financial literacy educator. Use the context below to answer the question.\n"
@@ -37,8 +57,6 @@ def answer(question: str, history: list = []) -> str:
             f"Context:\n{context}"
         ))
 
-        # include prior turns (exclude the current HumanMessage at the end)
-        prior = history[:-1] if history else []
         messages = [system] + prior + [HumanMessage(content=question)]
 
         result = llm.invoke(messages)
